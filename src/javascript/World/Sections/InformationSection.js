@@ -77,15 +77,15 @@ export default class InformationSection
         // Options
         this.links.options = [
             {
-                href: 'https://github.com/mosab7',
+                href: 'https://github.com/yverdonyverdon',
                 labelTexture: this.resources.items.informationContactGithubLabelTexture
             },
             {
-                href: 'https://www.linkedin.com/in/mosab-khalil-436510155/',
+                href: 'https://www.linkedin.com/in/yverdon/',
                 labelTexture: this.resources.items.informationContactLinkedinLabelTexture
             },
             {
-                href: 'mailto:mosabkhalid9x9@gmail.com',
+                href: 'mailto:yverdonb@gmail.com',
                 labelTexture: this.resources.items.informationContactMailLabelTexture
             }
         ]

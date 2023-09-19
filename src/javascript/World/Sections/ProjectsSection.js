@@ -90,7 +90,7 @@ export default class ProjectsSection
                 floorTexture: this.resources.items.projectsFahharFloorTexture,
                 link:
                 {
-                    href: 'https://github.com/mosab7',
+                    href: 'https://github.com/yverdonyverdon',
                     x: - 4.8,
                     y: - 3,
                     halfExtents:
@@ -110,7 +110,7 @@ export default class ProjectsSection
                 floorTexture: this.resources.items.projectsElearningFloorTexture,
                 link:
                 {
-                    href: 'https://github.com/mosab7/E-Learning-Platform',
+                    href: 'https://github.com/yverdonyverdon/E-Learning-Platform',
                     x: - 4.8,
                     y: - 3,
                     halfExtents:
@@ -131,7 +131,7 @@ export default class ProjectsSection
                 floorTexture: this.resources.items.projectsTicimaxFloorTexture,
                 link:
                 {
-                    href: 'https://github.com/mosab7/Ticimax-WebServices-Sample',
+                    href: 'https://github.com/yverdonyverdon/Ticimax-WebServices-Sample',
                     x: - 4.8,
                     y: - 3,
                     halfExtents:
