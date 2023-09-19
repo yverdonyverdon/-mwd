@@ -3,7 +3,7 @@ import * as dat from 'dat.gui'
 
 import Sizes from './Utils/Sizes.js'
 import Time from './Utils/Time.js'
-import World from './World/index.js'
+import World from './World/your-js-module-file.js'
 import Resources from './Resources.js'
 
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
