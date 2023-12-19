@@ -1,90 +1,135 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.124/build/three.module.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.112.1/build/three.module.js';
 
 
 export const textures = (function() {
-
-  // Taken from https://github.com/mrdoob/three.js/issues/758
-  function _GetImageData( image ) {
-    var canvas = document.createElement('canvas');
-    canvas.width = image.width;
-    canvas.height = image.height;
-
-    var context = canvas.getContext('2d');
-    context.drawImage( image, 0, 0 );
-
-    return context.getImageData( 0, 0, image.width, image.height );
-  }
-
   return {
+    // Originally I planned to do texture atlasing, then got lazy.
     TextureAtlas: class {
-      constructor(params) {
-        this._threejs = params.threejs;
-        this._Create();
+      constructor(game) {
+        this._game = game;
+        this._Create(game);
         this.onLoad = () => {};
       }
 
-      Load(atlas, names) {
-        this._LoadAtlas(atlas, names);
-      }
-
-      _Create() {
+      _Create(game) {
         this._manager = new THREE.LoadingManager();
         this._loader = new THREE.TextureLoader(this._manager);
         this._textures = {};
 
+        this._LoadType(
+            'grass',
+            ['resources/minecraft/textures/blocks/grass_combined.png'],
+            new THREE.Vector2(1.0, 1.0),
+            [new THREE.Color(1.0, 1.0, 1.0), new THREE.Color(1.0, 1.0, 1.0)]
+        );
+
+        this._LoadType(
+            'desert',
+            ['resources/minecraft/textures/blocks/grass_combined.png'],
+            new THREE.Vector2(1.0, 1.0),
+            [new THREE.Color(0xbfb755), new THREE.Color(0xbfb755)]
+        );
+
+        this._LoadType(
+            'dirt',
+            ['resources/minecraft/textures/blocks/dirt.png'],
+            new THREE.Vector2(1.0, 4.0),
+            [new THREE.Color(1.0, 1.0, 1.0), new THREE.Color(1.0, 1.0, 1.0)]
+        );
+
+        this._LoadType(
+            'sand',
+            ['resources/minecraft/textures/blocks/sand.png'],
+            new THREE.Vector2(1.0, 4.0),
+            [new THREE.Color(1.0, 1.0, 1.0), new THREE.Color(1.0, 1.0, 1.0)]
+        );
+
+        this._LoadType(
+            'ocean',
+            ['resources/minecraft/textures/blocks/sand.png'],
+            new THREE.Vector2(1.0, 4.0),
+            [new THREE.Color(1.0, 1.0, 1.0), new THREE.Color(1.0, 1.0, 1.0)]
+        );
+
+        this._LoadType(
+            'water',
+            ['resources/minecraft/textures/blocks/water_single.png'],
+            new THREE.Vector2(1.0, 2.0),
+            [new THREE.Color(1.0, 1.0, 1.0), new THREE.Color(1.0, 1.0, 1.0)]
+        );
+
+        this._LoadType(
+            'stone',
+            ['resources/minecraft/textures/blocks/stone.png'],
+            new THREE.Vector2(1.0, 4.0),
+            [new THREE.Color(1.0, 1.0, 1.0), new THREE.Color(1.0, 1.0, 1.0)]
+        );
+
+        this._LoadType(
+            'snow',
+            ['resources/minecraft/textures/blocks/snow.png'],
+            new THREE.Vector2(1.0, 4.0),
+            [new THREE.Color(1.0, 1.0, 1.0), new THREE.Color(1.0, 1.0, 1.0)]
+        );
+
+        this._LoadType(
+            'log_spruce',
+            ['resources/minecraft/textures/blocks/log_spruce_combined.png'],
+            new THREE.Vector2(1.0, 2.0),
+            [new THREE.Color(1.0, 1.0, 1.0), new THREE.Color(1.0, 1.0, 1.0)]
+        );
+
+        this._LoadType(
+            'leaves_spruce',
+            ['resources/minecraft/textures/blocks/leaves_spruce_opaque.png'],
+            new THREE.Vector2(1.0, 4.0),
+            [new THREE.Color(1.0, 1.0, 1.0), new THREE.Color(1.0, 1.0, 1.0)]
+        );
+
+        // Whatever, don't judge me.
+        this._LoadType(
+            'cloud',
+            ['resources/minecraft/textures/blocks/snow.png'],
+            new THREE.Vector2(1.0, 4.0),
+            [new THREE.Color(1.0, 1.0, 1.0), new THREE.Color(1.0, 1.0, 1.0)]
+        );
+
         this._manager.onLoad = () => {
           this._OnLoad();
         };
+
+        this._game = game;
       }
 
       get Info() {
         return this._textures;
       }
 
-      _LoadTexture(n) {
-        const t = this._loader.load(n);
-        t.encoding = THREE.sRGBEncoding;
-        return t;
-      }
-
       _OnLoad() {
-        for (let k in this._textures) {
-          const atlas = this._textures[k];
-          const data = new Uint8Array(atlas.textures.length * 4 * 1024 * 1024);
-
-          for (let t = 0; t < atlas.textures.length; t++) {
-            const curTexture = atlas.textures[t];
-            const curData = _GetImageData(curTexture.image);
-            const offset = t * (4 * 1024 * 1024);
-
-            data.set(curData.data, offset);
-          }
-    
-          const diffuse = new THREE.DataTexture2DArray(data, 1024, 1024, atlas.textures.length);
-          diffuse.format = THREE.RGBAFormat;
-          diffuse.type = THREE.UnsignedByteType;
-          diffuse.minFilter = THREE.LinearMipMapLinearFilter;
-          diffuse.magFilter = THREE.LinearFilter;
-          diffuse.wrapS = THREE.RepeatWrapping;
-          diffuse.wrapT = THREE.RepeatWrapping;
-          diffuse.generateMipmaps = true;
-
-          const caps = this._threejs.capabilities;
-          const aniso = caps.getMaxAnisotropy();
-
-          diffuse.anisotropy = 4;
-
-          atlas.atlas = diffuse;
-        }
-
         this.onLoad();
       }
 
-      _LoadAtlas(atlas, names) {
-        this._textures[atlas] = {
-          textures: names.map(n => this._LoadTexture(n) ),
-          atlas: null,
+      _LoadType(name, textureNames, offset, colourRange) {
+        this._textures[name] = {
+          colourRange: colourRange,
+          uvOffset: [
+              offset.x,
+              offset.y,
+          ],
+          textures: textureNames.map(n => this._loader.load(n))
         };
+        if (this._textures[name].textures.length > 1) {
+        } else {
+          const caps = this._game._graphics._threejs.capabilities;
+          const aniso = caps.getMaxAnisotropy();
+
+          this._textures[name].texture = this._textures[name].textures[0];
+          this._textures[name].texture.minFilter = THREE.LinearMipMapLinearFilter;
+          this._textures[name].texture.magFilter = THREE.NearestFilter;
+          this._textures[name].texture.wrapS = THREE.RepeatWrapping;
+          this._textures[name].texture.wrapT = THREE.RepeatWrapping;
+          this._textures[name].texture.anisotropy = aniso;
+        }
       }
     }
   };
